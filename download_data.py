@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[7]:
-
-
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
@@ -196,7 +190,9 @@ def get_pop(com):
 
 def tasa_mortalidad_y_letalidad(df):
     df["% de letalidad"] = df['Muertes'] * 100 / df['Confirmados'] 
-    df["% Población contagiada acumulado"] = df['Confirmados'] * 100 / df["Población"]
+    df["% Población contagiada total"] = df['Confirmados'] * 100 / df["Población"]
+    df["% Población fallecida total"] = df['Muertes'] * 100 / df["Población"]
+    
     
 def obtener_df_semanal(df):
     df["Datetime"] = pd.to_datetime(df['Día'], format=df_date_format)
@@ -223,7 +219,8 @@ def obtener_df_semanal_desacumulado(df):
         
     dfs_desacumulado = pd.concat(dfs_desacumulados)
     dfs_desacumulado.drop(['Población',r'% de letalidad',
-                    r'% Población contagiada acumulado'],
+                    r'% Población contagiada total',
+                          r'% Población fallecida total'],
                          inplace = True,
                          axis = 1)
     dfs_desacumulado.sort_values(by = "Día", inplace = True)
@@ -275,23 +272,23 @@ pop_df, correspondence_dict_population = read_population_dataset()
 df_diario_acumulado['Población'] = df_diario_acumulado["Comunidad Autónoma"].apply(lambda x: get_pop(x))
 del pop_df, correspondence_dict_population
 
+def get_total_rows(df_diario_acumulado):
+    dfs=[]
+    for day in df_diario_acumulado["Día"].unique():
+        df = df_diario_acumulado.loc[df_diario_acumulado['Día'] == day].copy()
+        total_row = {'Comunidad Autónoma':'Total', 'Confirmados':sum(df['Confirmados']),
+                    'Muertes': sum(df['Muertes']), 'Día':day, 'Población':sum(df['Población'])}
+        df = df.append(total_row, ignore_index = True)
+        dfs.append(df)
+    df = pd.concat(dfs)
+    return df.sort_values(by='Día')
+
+df_diario_acumulado = get_total_rows(df_diario_acumulado)
+
 tasa_mortalidad_y_letalidad(df_diario_acumulado)
 df_semanal_acumulado = obtener_df_semanal(df_diario_acumulado)
 df_semanal_desacumulado = obtener_df_semanal_desacumulado(df_semanal_acumulado)
 
 save_df('diario_acumulado.csv', df_diario_acumulado)
 save_df('semanal_acumulado.csv', df_semanal_acumulado)
-save_df('semanal_desacumulado.csv',df_semanal_desacumulado)
-
-
-# In[3]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+save_df('semanal_desacumulado.csv', df_semanal_desacumulado)

@@ -1,0 +1,25 @@
+.custom-row {
+    display:flex;
+    flex-direction:row;
+    width:98vw;
+}
+
+.fuente-datos {
+    text-align:right;
+}
+
+.horizontal-expanded {
+    flex: 1;
+}
+
+.tab {
+    background-color: #232323 !important;
+    color: #f1f1f1 !important;
+    padding:5px !important;
+ }
+
+.title {
+    margin-top:30px;
+    margin-bottom: 30px;
+    text-align: center;
+}

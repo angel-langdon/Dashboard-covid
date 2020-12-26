@@ -9,10 +9,5 @@ def title():
                           html.A(children="Nacho",
                                  href='https://www.linkedin.com/in/ignacio-cano/'),
                           ' | Dashboard COVID-19 España'],
-                className="title"),
-        html.Div(children=[
-            "Fuente de los datos: ",
-            html.A(children="John Hopkins University",
-                   href='https://github.com/CSSEGISandData/COVID-19')],
-            className='fuente-datos')
+                className="title")
     ])
