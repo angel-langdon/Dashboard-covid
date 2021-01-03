@@ -159,7 +159,7 @@ def read_communites_geojson_v1(name = "spain-communities" ):
 
 
         
-def read_population_dataset(name = 'spain-communities-2019.csv'):
+def read_population_dataset(name = 'spain-communities-2020.csv'):
     
     def clean_name_pop(name):
         if " " in name:
@@ -173,8 +173,8 @@ def read_population_dataset(name = 'spain-communities-2019.csv'):
         if "." in pop:
             return int(pop.replace(".",""))
     population = pd.read_csv(f"./data/population/{name}", sep=";")
-    population = population[population["Periodo"] == 2019]
-    population = population[population["Sexo"] == "Total"] 
+    #population = population[population["Periodo"] == 2019]
+    #population = population[population["Sexo"] == "Total"] 
     population.drop(columns=['Periodo', 'Sexo'], inplace=True)
     population['Comunidades y Ciudades Autónomas'] = [clean_name_pop(name) for name in population['Comunidades y Ciudades Autónomas'] ]
     population["Total"] = [clean_pop_pop(pop) for pop in population["Total"]]

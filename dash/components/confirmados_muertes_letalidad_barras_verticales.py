@@ -21,6 +21,9 @@ def grafico_barras_verticales(df, y_value, cons, x_value="Comunidad Autónoma"):
 def confirmados_muertes_letalidad_barras_verticales(df, cons):
     return html.Div(children=[
 
+        html.H2(children='Datos totales por comunidad autónoma',
+                style={'text-align':'center'}),
+
         html.Div(children=[
             dcc.Graph(
                 id='grafico-confirmados',

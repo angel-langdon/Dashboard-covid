@@ -1,6 +1,5 @@
 .custom-row {
     display:flex;
-    flex-direction:row;
     width:98vw;
 }
 
@@ -9,7 +8,7 @@
 }
 
 .horizontal-expanded {
-    flex: 1;
+    flex:1;
 }
 
 .tab {
@@ -18,8 +17,22 @@
     padding:5px !important;
  }
 
+.Select-value-label, #seleccionador-comunidad {
+    color: #f1f1f1 !important;
+    background-color: #232323 !important;
+
+}
+
+.Select-menu-outer{
+    color: #f1f1f1 !important;
+    background-color: #232323 !important;
+
+
+}
+
 .title {
     margin-top:30px;
     margin-bottom: 30px;
     text-align: center;
+
 }

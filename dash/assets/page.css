@@ -2,6 +2,8 @@
 body {
     background: #232323;
     color: #f1f1f1;
+    overflow:auto;
+
 }
 
 

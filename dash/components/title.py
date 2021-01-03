@@ -10,4 +10,4 @@ def title():
                                  href='https://www.linkedin.com/in/ignacio-cano/'),
                           ' | Dashboard COVID-19 España'],
                 className="title")
-    ])
+    ], className='title-container')

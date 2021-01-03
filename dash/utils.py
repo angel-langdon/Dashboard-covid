@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+from numpy import floating, integer
 
 
 def read_data(name):
@@ -17,3 +18,12 @@ def read_geojson(name='spain-communities-displaced-original-compressed.geojson')
         geojson = json.load(f)
     return geojson
 
+
+def beautify_number(number):
+    if isinstance(number, (float, floating)):
+        if number.is_integer():
+            return beautify_number(int(number))
+        return round(number, 4)
+    elif isinstance(number, (int, integer)):
+        number = str(number)[::-1]
+        return ' '.join(number[i:i + 3] for i in range(0, len(number), 3))[::-1]
