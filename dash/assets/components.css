@@ -32,7 +32,59 @@
 
 .title {
     margin-top:30px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     text-align: center;
+}
+.autores {
+    text-align:right;
+    margin-right:20px;
+    margin-bottom:20px;
+}
+
+.information-open-button{
+    background-color: #119DDF !important;
+    color: #f1f1f1 !important;
+    text-transform: none;
+    position:fixed;
+    padding:0px 15px;
+    font-size:1.5em;
+    left:20px;
+    box-sizing:border-box;
+    border-radius:30px;
+    bottom:20px;
+}
+
+.information-close-button{
+    background-color: #232323 !important;
+    color: #f1f1f1 !important;
+    position:absolute;
+    padding:0px 10px;
+    font-size:20pt;
+    top:20px;
+    right:20px;
+}
+
+.information-container {
+    width: 80vw;
+    height:80vh;
+    margin:auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FFF;
+    display:none;
+    color:#000 !important;
+}
+
+.information-table {
+    position:relative;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 90%;
+    height:90%;
 
 }
+
+

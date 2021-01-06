@@ -1,0 +1,3 @@
+[process:gunicorn]
+cmd = gunicorn -w 3 index:server -b 127.0.0.1:8000
+cwd = /home/Projects/Dashboard-covid/dash

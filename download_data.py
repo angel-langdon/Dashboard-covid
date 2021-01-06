@@ -227,6 +227,36 @@ def obtener_df_semanal_desacumulado(df):
     return dfs_desacumulado
 
 
+def correct_names():
+    def read_population_dataset_custom(name = 'spain-communities-2020.csv'):
+        def clean_name_pop(name):
+            if " " in name:
+                name = " ".join(name.split(" ")[1:])
+            if "," in name:
+                split = name.split(",")
+                name = " ".join(split[1:] + [split[0]])
+            return name
+        def clean_pop_pop(pop):
+            if "." in pop:
+                return int(pop.replace(".",""))
+        population = pd.read_csv(f"./data/population/{name}", sep=";")
+        population.drop(columns=['Periodo', 'Sexo'], inplace=True)
+        population['Comunidades y Ciudades Autónomas'] = [clean_name_pop(name) for name in population['Comunidades y Ciudades Autónomas'] ]
+        population["Total"] = [clean_pop_pop(pop) for pop in population["Total"]]
+        return population
+
+
+    corres_dict = get_correspondence_dict(dfs[0]['Province_State'], read_population_dataset_custom()['Comunidades y Ciudades Autónomas'])
+    corres_dict['Valencia'] = 'Comunitat Valenciana'
+    corres_dict['Navarra'] = 'Comunidad Foral de Navarra'
+    corres_dict['Total'] = 'Total'
+    
+    for key,value in corres_dict.items():
+        if " " == value[0]:
+            corres_dict[key]=value[1:]
+    return corres_dict
+
+
 def download_all_datasets():
     start_date = datetime(month = 5, day = 14, year=2020)    
     days = generate_days(start_date)
@@ -271,6 +301,8 @@ df_diario_acumulado.rename(columns={"Province_State": "Comunidad Autónoma",
 pop_df, correspondence_dict_population = read_population_dataset()
 df_diario_acumulado['Población'] = df_diario_acumulado["Comunidad Autónoma"].apply(lambda x: get_pop(x))
 del pop_df, correspondence_dict_population
+correct_communites = correct_names()
+
 
 def get_total_rows(df_diario_acumulado):
     dfs=[]
@@ -286,6 +318,8 @@ def get_total_rows(df_diario_acumulado):
 df_diario_acumulado = get_total_rows(df_diario_acumulado)
 
 tasa_mortalidad_y_letalidad(df_diario_acumulado)
+
+df_diario_acumulado['Comunidad/Ciudad Autónoma'] = [correct_communites[com] for com in df_diario_acumulado['Comunidad Autónoma']]
 df_semanal_acumulado = obtener_df_semanal(df_diario_acumulado)
 df_semanal_desacumulado = obtener_df_semanal_desacumulado(df_semanal_acumulado)
 

@@ -5,12 +5,13 @@ from components.kpi import kpi
 
 
 def mapa_acumulado(df, geojson, cons, df_total):
-    info = {'Muertes': 'Fallecimientos totales',
-            'Confirmados': 'Casos confirmados totales',
-            '% de letalidad': '% de letalidad (muertes/casos) total',
-            '% Población contagiada total': ' % de la población contagiada total'}
+    info = {'Muertes': 'Fallecimientos',
+            'Confirmados': 'Casos confirmados',
+            '% de letalidad': '% de letalidad (muertes/casos)',
+            '% Población contagiada total': ' % de la población contagiada'}
 
     def generar_mapa_acumulado(columna="Muertes"):
+        custom_data=['Comunidad/Ciudad Autónoma', columna, 'Población']
         fig = px.choropleth(df,
                             geojson=geojson,
                             locations='Comunidad Autónoma',
@@ -18,9 +19,18 @@ def mapa_acumulado(df, geojson, cons, df_total):
                             featureidkey="properties.name",
                             title=info[columna],
                             template=cons.theme,
+                            custom_data=custom_data,
                             color_continuous_scale=cons.gradients[columna],
                             height=600)
         fig.update_geos(fitbounds="locations", visible=False)
+
+        porcentaje = ":.4f" if '%' in columna else ""
+        fig.update_traces(hovertemplate="<br>".join([
+            custom_data[0]+": %{customdata[0]}",
+            custom_data[1]+": %{customdata[1]"+porcentaje+"}",
+            custom_data[2] + ": %{customdata[2]}",
+
+        ]))
 
         fig.update_layout({
             'plot_bgcolor': cons.colors['fig_bgcolor'],
@@ -31,11 +41,10 @@ def mapa_acumulado(df, geojson, cons, df_total):
 
         return dcc.Graph(
             figure=fig
-
         )
 
     return html.Div(children=[
-        html.H2(children="Choropleth datos totales", style={'text-align': 'center'}),
+        html.H2(children="Choropleth datos acumulados", style={'text-align': 'center'}),
         html.Div(children=[
             html.Div(children=[
                 kpi("Confirmados",
@@ -61,7 +70,8 @@ def mapa_acumulado(df, geojson, cons, df_total):
                 style={'width': '98vw',
                        'margin': '0px 20px'}),
             dcc.Tabs(
-                [dcc.Tab(label=col, className='tab',
+                [dcc.Tab(label=col,
+                         className='tab',
                          children=[generar_mapa_acumulado(col)]) for col in cons.gradients.keys()]
             )
 

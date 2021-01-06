@@ -5,7 +5,7 @@ from numpy import floating, integer
 
 def read_data(name):
     # return pd.read_csv(os.path.join(DATA_FOLDER, name), sep=";")
-    # base_url = "https://entredatos.es/dashboard-covid/final_data/"
+    #base_url = "https://entredatos.es/dashboard-covid/final_data/"
     base_url = "../data/final_data/"
     complete_url = f"{base_url}{name}"
     return pd.read_csv(complete_url, sep=";")

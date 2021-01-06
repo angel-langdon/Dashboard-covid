@@ -24,5 +24,6 @@ paddings = {'vertical': '10px',
 
 styles = {'figure': {'background-color': colors["fig_bgcolor"],
                      'margin': f"{margins['vertical']} {margins['horizontal']}",
-                     'padding': f"{paddings['vertical']} {paddings['horizontal']}"}
+                     'padding': f"{paddings['vertical']} {paddings['horizontal']}",
+                     }
           }
