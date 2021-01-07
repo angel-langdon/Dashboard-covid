@@ -8,6 +8,7 @@
 ### 2º Instalar los paquetes necesarios para poder ejecutar los scripts
 Se pueden instalar manualmente con este comando: 
 > pip install -r requirements.txt
+
 O bien manualmente instalando los paquetes que están descritos en requirements.txt
 
 ### 2º Ejecutar los siguientes comandos:
