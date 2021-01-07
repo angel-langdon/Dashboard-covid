@@ -1,30 +1,34 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 import constants as cons
 from server import app
-from datasets import diario_acumulado
+import pandas as pd
 
-df = diario_acumulado()
 
+app.config.suppress_callback_exceptions = True
 
 @app.callback(
     [Output('grafico-lineas-com-confirmados', 'figure'),
      Output('grafico-lineas-com-muertes', 'figure'),
      Output('grafico-lineas-com-porc-confirmados', 'figure'),
      Output('grafico-lineas-com-porc-fallecidos', 'figure')],
-    [Input('seleccionador-comunidad', 'value')])
-def grafico(comunidad, x_value="Día"):
-    if comunidad == None:
-        comunidad = 'Total'
-    return (generar(comunidad, x_value, "Confirmados"),
-            generar(comunidad, x_value, "Muertes"),
-            generar(comunidad, x_value, "% Población contagiada total"),
-            generar(comunidad, x_value, "% Población fallecida total"))
+    [Input('seleccionador-comunidad', 'value'),
+     State('diario-acumulado', 'data')])
+def grafico(comunidad, df):
+    if df is not None:
+        df = pd.read_json(df)
+        if comunidad is None:
+            comunidad = 'Total'
+        x_value = "Día"
+        return (generar(comunidad, x_value, "Confirmados", df),
+                generar(comunidad, x_value, "Muertes", df),
+                generar(comunidad, x_value, "% Población contagiada total", df),
+                generar(comunidad, x_value, "% Población fallecida total", df))
 
 
-def generar(value, x_value, y_value):
+def generar(value, x_value, y_value, df):
     FIG_HEIGHT = 350
     if y_value == "Confirmados":
         text = '% Población contagiada total'
@@ -66,44 +70,57 @@ def generar(value, x_value, y_value):
 
 
 def grafico_lineas():
-    return html.Div(children=[
-        html.H2(children="Evolución acumulada según comunidad autónoma", style={'text-align': 'center'}),
-        dcc.Dropdown(
-            id='seleccionador-comunidad',
-            options=[{'label': com, 'value': df.loc[df['Comunidad/Ciudad Autónoma'] == com, 'Comunidad Autónoma'].iloc[1]} for com in
-                     sorted(df['Comunidad/Ciudad Autónoma'].unique())],
-            value='Madrid',
-            className='dropdown-selector',
-            style={'background-color': '#232323',
-                   'color': '#f1f1f1',
-                   'padding': 5}),
-        html.Div(children=[
-            dcc.Graph(
-                id=f'grafico-lineas-com-confirmados',
-                className="horizontal-expanded",
-                style=cons.styles['figure'],
-                config={'responsive': True}
-            ),
-            dcc.Graph(
-                id=f'grafico-lineas-com-muertes',
-                className="horizontal-expanded",
-                style=cons.styles['figure'],
-                config={'responsive': True}
-            )
-        ], className="custom-row"),
-        html.Div(children=[
-            dcc.Graph(
-                id=f'grafico-lineas-com-porc-confirmados',
-                className="horizontal-expanded",
-                style=cons.styles['figure'],
-                config={'responsive': True}
-            ),
-            dcc.Graph(
-                id=f'grafico-lineas-com-porc-fallecidos',
-                className="horizontal-expanded",
-                style=cons.styles['figure'],
-                config={'responsive': True}
-            )
-        ], className="custom-row"),
+    return html.Div('', id='grafico-lineas-')
 
-    ])
+
+@app.callback(Output('grafico-lineas-', 'children'),
+              [Input('diario-acumulado', 'modified_timestamp'),
+               State('diario-acumulado', 'data')])
+def grafico_lineas_generador(ts, df):
+    if df is None:
+        return ''
+    else:
+        df = pd.read_json(df)
+        return html.Div(children=[
+            html.H2(children="Evolución acumulada según comunidad autónoma", style={'text-align': 'center'}),
+            dcc.Dropdown(
+                id='seleccionador-comunidad',
+                options=[
+                    {'label': com,
+                     'value': df.loc[df['Comunidad/Ciudad Autónoma'] == com, 'Comunidad Autónoma'].iloc[1]}
+                    for com in
+                    sorted(df['Comunidad/Ciudad Autónoma'].unique())],
+                value='Madrid',
+                className='dropdown-selector',
+                style={'background-color': '#232323',
+                       'color': '#f1f1f1',
+                       'padding': 5}),
+            html.Div(children=[
+                dcc.Graph(
+                    id=f'grafico-lineas-com-confirmados',
+                    className="horizontal-expanded",
+                    style=cons.styles['figure'],
+                    config={'responsive': True}
+                ),
+                dcc.Graph(
+                    id=f'grafico-lineas-com-muertes',
+                    className="horizontal-expanded",
+                    style=cons.styles['figure'],
+                    config={'responsive': True}
+                )
+            ], className="custom-row"),
+            html.Div(children=[
+                dcc.Graph(
+                    id=f'grafico-lineas-com-porc-confirmados',
+                    className="horizontal-expanded",
+                    style=cons.styles['figure'],
+                    config={'responsive': True}
+                ),
+                dcc.Graph(
+                    id=f'grafico-lineas-com-porc-fallecidos',
+                    className="horizontal-expanded",
+                    style=cons.styles['figure'],
+                    config={'responsive': True}
+                )
+            ], className="custom-row"),
+        ])

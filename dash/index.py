@@ -2,6 +2,7 @@ from server import app, server
 from layout import layout
 import platform
 
+
 app.layout = layout
 
 app.title = 'Dashboard COVID-19'
