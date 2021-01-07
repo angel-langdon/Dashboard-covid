@@ -13,6 +13,7 @@ O bien manualmente instalando los paquetes que están descritos en requirements.
 
 ### 2º Ejecutar los siguientes comandos:
 > cd dash
+
 > python index.py
 
 ### 3º Dirigirse a esta dirección 
